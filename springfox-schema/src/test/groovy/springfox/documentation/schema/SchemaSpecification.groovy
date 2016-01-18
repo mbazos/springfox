@@ -26,6 +26,7 @@ import spock.lang.Specification
 import springfox.documentation.schema.mixins.ModelProviderSupport
 import springfox.documentation.schema.mixins.SchemaPluginsSupport
 import springfox.documentation.spi.DocumentationType
+import springfox.documentation.spi.schema.TypeIdProviderPlugin
 import springfox.documentation.spi.schema.TypeNameProviderPlugin
 
 @Mixin([ModelProviderSupport, SchemaPluginsSupport])
@@ -37,8 +38,12 @@ class SchemaSpecification extends Specification {
   def setup() {
     PluginRegistry<TypeNameProviderPlugin, DocumentationType> modelNameRegistry =
         OrderAwarePluginRegistry.create([new DefaultTypeNameProvider()])
+
+    PluginRegistry<TypeIdProviderPlugin, DocumentationType> modelIdRegistry =
+            OrderAwarePluginRegistry.create([new DefaultTypeIdProvider()])
+
     typeNameExtractor =
-            new TypeNameExtractor(new TypeResolver(), modelNameRegistry)
+            new TypeNameExtractor(new TypeResolver(), modelNameRegistry, modelIdRegistry)
     modelProvider = defaultModelProvider()
     modelDependencyProvider = defaultModelDependencyProvider()
   }

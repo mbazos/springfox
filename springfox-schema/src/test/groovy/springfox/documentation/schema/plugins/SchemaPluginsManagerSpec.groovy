@@ -25,6 +25,7 @@ import spock.lang.Specification
 import springfox.documentation.builders.ModelPropertyBuilder
 import springfox.documentation.schema.AlternateTypesSupport
 import springfox.documentation.schema.DefaultGenericTypeNamingStrategy
+import springfox.documentation.schema.DefaultTypeIdProvider
 import springfox.documentation.schema.ExampleWithEnums
 import springfox.documentation.schema.TypeForTestingPropertyNames
 import springfox.documentation.schema.TypeNameExtractor
@@ -32,6 +33,7 @@ import springfox.documentation.spi.DocumentationType
 import springfox.documentation.spi.schema.AlternateTypeProvider
 import springfox.documentation.spi.schema.ModelBuilderPlugin
 import springfox.documentation.spi.schema.ModelPropertyBuilderPlugin
+import springfox.documentation.spi.schema.TypeIdProviderPlugin
 import springfox.documentation.spi.schema.TypeNameProviderPlugin
 import springfox.documentation.spi.schema.contexts.ModelContext
 import springfox.documentation.spi.schema.contexts.ModelPropertyContext
@@ -49,6 +51,7 @@ class SchemaPluginsManagerSpec extends Specification {
   def propertyPlugin = Mock(ModelPropertyBuilderPlugin)
   def modelPlugin = Mock(ModelBuilderPlugin)
   def namePlugin = Mock(TypeNameProviderPlugin)
+  def idPlugin = Mock(TypeIdProviderPlugin)
 
   def setup() {
     PluginRegistry<ModelPropertyBuilderPlugin, DocumentationType> propRegistry =
@@ -63,8 +66,12 @@ class SchemaPluginsManagerSpec extends Specification {
             OrderAwarePluginRegistry.create(newArrayList(namePlugin))
     namePlugin.supports(SPRING_WEB) >> true
 
+    PluginRegistry<TypeIdProviderPlugin, DocumentationType> modelIdRegistry =
+            OrderAwarePluginRegistry.create([new DefaultTypeIdProvider()])
+    idPlugin.supports(SPRING_WEB) >> true
+
     sut = new SchemaPluginsManager(propRegistry, modelRegistry)
-    typeNames = new TypeNameExtractor(new TypeResolver(), modelNameRegistry)
+    typeNames = new TypeNameExtractor(new TypeResolver(), modelNameRegistry, modelIdRegistry)
   }
 
   def "enriches model property when plugins are found"() {

@@ -20,33 +20,20 @@
 package springfox.documentation.schema;
 
 
+import org.springframework.stereotype.Component;
 import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spi.schema.TypeIdProviderPlugin;
 
-public class ModelNameContext {
-  private final Class<?> type;
-  private final DocumentationType documentationType;
-  private final ModelNameType modelNameType;
+@Component
+public class DefaultTypeIdProvider implements TypeIdProviderPlugin {
 
-  public ModelNameContext(Class<?> type, DocumentationType documentationType, ModelNameType modelNameType) {
-    this.type = type;
-    this.documentationType = documentationType;
-    this.modelNameType = modelNameType;
+  @Override
+  public boolean supports(DocumentationType delimiter) {
+    return true;
   }
 
-  public Class<?> getType() {
-    return type;
-  }
-
-  public DocumentationType getDocumentationType() {
-    return documentationType;
-  }
-
-  public ModelNameType getModelNameType() {
-    return modelNameType;
-  }
-
-  public enum ModelNameType {
-    NAME,
-    ID
+  @Override
+  public String nameFor(Class<?> type) {
+    return type.getTypeName();
   }
 }

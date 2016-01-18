@@ -33,6 +33,7 @@ import springfox.documentation.schema.property.OptimizedModelPropertiesProvider
 import springfox.documentation.schema.property.bean.AccessorsProvider
 import springfox.documentation.schema.property.field.FieldProvider
 import springfox.documentation.spi.DocumentationType
+import springfox.documentation.spi.schema.TypeIdProviderPlugin
 import springfox.documentation.spi.schema.TypeNameProviderPlugin
 
 @SuppressWarnings("GrMethodMayBeStatic")
@@ -41,7 +42,9 @@ class ModelProviderForServiceSupport {
   def typeNameExtractor() {
     PluginRegistry<TypeNameProviderPlugin, DocumentationType> modelNameRegistry =
         OrderAwarePluginRegistry.create([new DefaultTypeNameProvider()])
-    new TypeNameExtractor(new TypeResolver(),  modelNameRegistry)
+    PluginRegistry<TypeIdProviderPlugin, DocumentationType> modelIdRegistry =
+            OrderAwarePluginRegistry.create([new DefaultTypeIdProvider()])
+    new TypeNameExtractor(new TypeResolver(),  modelNameRegistry, modelIdRegistry)
   }
 
   ModelProvider modelProvider(SchemaPluginsManager pluginsManager = defaultSchemaPlugins(),

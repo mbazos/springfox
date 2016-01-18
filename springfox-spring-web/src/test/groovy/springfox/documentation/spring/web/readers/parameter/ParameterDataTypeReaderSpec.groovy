@@ -27,11 +27,13 @@ import org.springframework.web.method.HandlerMethod
 import org.springframework.web.multipart.MultipartFile
 import springfox.documentation.builders.ParameterBuilder
 import springfox.documentation.schema.DefaultGenericTypeNamingStrategy
+import springfox.documentation.schema.DefaultTypeIdProvider
 import springfox.documentation.schema.DefaultTypeNameProvider
 import springfox.documentation.schema.TypeNameExtractor
 import springfox.documentation.schema.mixins.SchemaPluginsSupport
 import springfox.documentation.service.ResolvedMethodParameter
 import springfox.documentation.spi.DocumentationType
+import springfox.documentation.spi.schema.TypeIdProviderPlugin
 import springfox.documentation.spi.schema.TypeNameProviderPlugin
 import springfox.documentation.spi.service.contexts.OperationContext
 import springfox.documentation.spi.service.contexts.ParameterContext
@@ -46,7 +48,9 @@ class ParameterDataTypeReaderSpec extends DocumentationContextSpec {
   MethodParameter methodParameter = Stub(MethodParameter)
   PluginRegistry<TypeNameProviderPlugin, DocumentationType> modelNameRegistry =
       OrderAwarePluginRegistry.create([new DefaultTypeNameProvider()])
-  def typeNameExtractor = new TypeNameExtractor(new TypeResolver(),  modelNameRegistry)
+  PluginRegistry<TypeIdProviderPlugin, DocumentationType> modelIdRegistry =
+          OrderAwarePluginRegistry.create([new DefaultTypeIdProvider()])
+  def typeNameExtractor = new TypeNameExtractor(new TypeResolver(),  modelNameRegistry, modelIdRegistry)
 
   ParameterDataTypeReader sut = new ParameterDataTypeReader(typeNameExtractor, new TypeResolver())
 

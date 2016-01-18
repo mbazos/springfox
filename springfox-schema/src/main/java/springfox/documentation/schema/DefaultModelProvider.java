@@ -93,9 +93,11 @@ public class DefaultModelProvider implements ModelProvider {
   private Model modelBuilder(ResolvedType propertiesHost,
                              Map<String, ModelProperty> properties,
                              ModelContext modelContext) {
+
     String typeName = typeNameExtractor.typeName(ModelContext.fromParent(modelContext, propertiesHost));
+    String typeId = typeNameExtractor.typeId(ModelContext.fromParent(modelContext, propertiesHost));
     modelContext.getBuilder()
-        .id(typeName)
+        .id(typeId)
         .type(propertiesHost)
         .name(typeName)
         .qualifiedType(ResolvedTypes.simpleQualifiedTypeName(propertiesHost))
@@ -123,8 +125,9 @@ public class DefaultModelProvider implements ModelProvider {
   private Optional<Model> mapModel(ModelContext parentContext, ResolvedType resolvedType) {
     if (isMapType(resolvedType) && !parentContext.hasSeenBefore(resolvedType)) {
       String typeName = typeNameExtractor.typeName(parentContext);
+      String typeId = typeNameExtractor.typeId(parentContext);
       return Optional.of(parentContext.getBuilder()
-          .id(typeName)
+          .id(typeId)
           .type(resolvedType)
           .name(typeName)
           .qualifiedType(ResolvedTypes.simpleQualifiedTypeName(resolvedType))

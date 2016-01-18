@@ -17,36 +17,16 @@
  *
  */
 
-package springfox.documentation.schema;
+package springfox.documentation.spi.schema;
 
-
+import org.springframework.plugin.core.Plugin;
 import springfox.documentation.spi.DocumentationType;
 
-public class ModelNameContext {
-  private final Class<?> type;
-  private final DocumentationType documentationType;
-  private final ModelNameType modelNameType;
-
-  public ModelNameContext(Class<?> type, DocumentationType documentationType, ModelNameType modelNameType) {
-    this.type = type;
-    this.documentationType = documentationType;
-    this.modelNameType = modelNameType;
-  }
-
-  public Class<?> getType() {
-    return type;
-  }
-
-  public DocumentationType getDocumentationType() {
-    return documentationType;
-  }
-
-  public ModelNameType getModelNameType() {
-    return modelNameType;
-  }
-
-  public enum ModelNameType {
-    NAME,
-    ID
-  }
+public interface TypeIdProviderPlugin extends Plugin<DocumentationType> {
+  /**
+   * Given a class name provides a id for it
+   * @param type - class to provide id for
+   * @return name
+   */
+  String nameFor(Class<?> type);
 }
